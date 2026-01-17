@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request ,  render_template
-from llm_router import llm_rewrite_query
+from llm_router import llm_pick_best_query
 from db import fetch_all, fetch_one
 from queries import (
     GET_STORE_BY_ID,
@@ -7,6 +7,7 @@ from queries import (
     GET_COUPON_BY_STORE,
     GET_BEST_AD_BY_STORE,
     GET_ROUTE_BY_STORE,
+    GET_SUGGESTIONS,
 )
 
 _SESSIONS = {}
@@ -71,15 +72,70 @@ def chat_message():
     sess["stage"] = "searching"
     sess["last_text"] = text
 
-    # Simple MVP logic: treat every text as a search query
+    # 1) אם אין טקסט – מחזירים מיד
+    if not text:
+        messages = [{
+            "role": "assistant",
+            "text": "מה מחפשים? כתוב מוצר או קטגוריה (למשל: משקפי שמש, קפה, נעליים)."
+        }]
+        return jsonify(_response(session_id, messages=messages))
 
-    rewritten = llm_rewrite_query(text)
-    query =(rewritten.get("query") or text).strip()
-    
-    pattern = f"%{query}%"
-    rows = fetch_all(SEARCH_PRODUCTS, (pattern, pattern, pattern, limit))
-    print("LLM rewritten:", rewritten)  
-    # Build unique store buttons from results
+    # 2) מביאים מועמדים מה-DB לפי הטקסט הגולמי
+    rewritten = llm_pick_best_query(text, [])
+    queries = rewritten.get("queries") or [text]
+
+    print("LLM queries:", queries)
+
+    # 2) עכשיו מנסים DB עם כל query
+    rows = []
+    for q in queries:
+        p = f"%{q}%"
+        rows = fetch_all(SEARCH_PRODUCTS, (p, p, p, limit))
+        if rows:
+            break
+
+    # 3) רק אם לא מצאנו כלום – ננסה גם candidates מה-DB
+    if not rows:
+        pattern = f"%{text}%"
+        candidates = fetch_all(GET_SUGGESTIONS, (pattern, 20))
+        terms = [r["term"] for r in candidates]
+
+        if terms:
+            rewritten2 = llm_pick_best_query(text, terms)
+            queries2 = rewritten2.get("queries") or []
+            for q in queries2:
+                p = f"%{q}%"
+                rows = fetch_all(SEARCH_PRODUCTS, (p, p, p, limit))
+                if rows:
+                    break
+
+    queries = rewritten.get("queries") or [text]
+
+    # 4) מנסים לחפש ב-DB לפי כל query עד שיש תוצאות
+    rows = []
+    used_query = text  # רק כדי לדעת מה עבד (לא חובה)
+    for q in queries:
+        if not isinstance(q, str):
+            continue
+        q = q.strip()
+        if not q:
+            continue
+
+        used_query = q
+        p = f"%{q}%"
+        rows = fetch_all(SEARCH_PRODUCTS, (p, p, p, limit))
+        if rows:
+            break
+
+    # 5) אם עדיין אין תוצאות
+    if not rows:
+        messages = [{
+            "role": "assistant",
+            "text": f"לא מצאתי תוצאות עבור: {text}. נסה ניסוח אחר או שם קטגוריה."
+        }]
+        return jsonify(_response(session_id, messages=messages, store_buttons=[]))
+
+    # 6) Build unique store buttons
     seen = set()
     store_buttons = []
     for r in rows:
@@ -88,15 +144,10 @@ def chat_message():
             seen.add(sid)
             store_buttons.append({"store_id": sid, "store_name": r["store_name"]})
 
-    if not text:
-        messages = [{"role": "assistant", "text": "מה מחפשים? כתוב מוצר או קטגוריה (למשל: משקפי שמש, קפה, נעליים)."}]
-        return jsonify(_response(session_id, messages=messages))
-
-    if not rows:
-        messages = [{"role": "assistant", "text": f"לא מצאתי תוצאות עבור: {text}. נסה ניסוח אחר או שם קטגוריה."}]
-        return jsonify(_response(session_id, messages=messages, store_buttons=[]))
-
-    messages = [{"role": "assistant", "text": "מצאתי חנויות רלוונטיות. על איזו חנות ללחוץ?"}]
+    messages = [{
+        "role": "assistant",
+        "text": "מצאתי חנויות רלוונטיות. על איזו חנות ללחוץ?"
+    }]
     return jsonify(_response(session_id, messages=messages, store_buttons=store_buttons))
 
 

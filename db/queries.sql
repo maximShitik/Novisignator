@@ -141,3 +141,14 @@ SELECT store_id, map_target_id, route_path_d
 FROM store_navigation
 WHERE store_id = ?;
 """
+GET_SUGGESTIONS = """
+SELECT DISTINCT term FROM (
+  SELECT product_name AS term FROM products
+  UNION
+  SELECT category AS term FROM products
+  UNION
+  SELECT store_name AS term FROM stores
+)
+WHERE LOWER(term) LIKE LOWER(?)
+LIMIT ?;
+"""
