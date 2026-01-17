@@ -1,4 +1,10 @@
 const path = document.getElementById("routePath");
+const title = document.getElementById("navTitle");
+
+const storeName = localStorage.getItem("sns_selected_store_name");
+if (title && storeName) {
+  title.textContent = `ניווט ל-${storeName}`;
+}
 
 function preparePath() {
   const length = path.getTotalLength();
