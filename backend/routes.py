@@ -78,7 +78,7 @@ def chat_message():
     
     pattern = f"%{query}%"
     rows = fetch_all(SEARCH_PRODUCTS, (pattern, pattern, pattern, limit))
-
+    print("LLM rewritten:", rewritten)  
     # Build unique store buttons from results
     seen = set()
     store_buttons = []

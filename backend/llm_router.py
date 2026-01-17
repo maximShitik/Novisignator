@@ -2,7 +2,7 @@ import os
 from openai import OpenAI
 import json
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+
 
 def llm_rewrite_query(text: str) -> dict:
     """
@@ -13,25 +13,36 @@ def llm_rewrite_query(text: str) -> dict:
         "intent": "product|store|category|unknown"
     }
     """
-    schema = {
-        "type": "object",
-        "properties": {
-            "query": {"type": "string"},
-            "keywords": {"type": "array", "items": {"type": "string"}},
-            "intent": {"type": "string", "enum": ["product", "store", "category", "unknown"]},
-        },
-        "required": ["query", "keywords", "intent"],
-        "additionalProperties": False
-    }
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not api_key:
+        return {
+            "query": text,
+            "keywords": [],
+            "intent": "unknown"
+        }
+    client = OpenAI(api_key=api_key)
+    prompt = f"""
+        Return ONLY valid JSON (no text) with the following structure:
+        {{
+        "query": string,
+        "keywords": string[],
+        "intent": "product" | "store" | "category" | "unknown"
+        }}
+
+        User request:
+        {text}
+        """
 
     resp = client.responses.create(
         model="gpt-4.1-mini",
-        input=[
-            {"role": "system", "content": "You rewrite short shopping/navigation requests into a clean search query. Output only JSON that matches the schema."},
-            {"role": "user", "content": text},
-        ],
-        response_format={"type": "json_schema", "json_schema": {"name": "rewriter", "schema": schema}},
+        input=prompt
     )
 
-    # ב-Responses API הפלט נמצא ב-output_text ואז הוא JSON תקין בגלל הסכמה
-    return json.loads(resp.output_text)
+    try:
+        return json.loads(resp.output_text)
+    except Exception:
+        return {
+            "query": text,
+            "keywords": [],
+            "intent": "unknown"
+        }
