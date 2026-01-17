@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request ,  render_template
-
+from llm_router import llm_rewrite_query
 from db import fetch_all, fetch_one
 from queries import (
     GET_STORE_BY_ID,
@@ -72,7 +72,11 @@ def chat_message():
     sess["last_text"] = text
 
     # Simple MVP logic: treat every text as a search query
-    pattern = f"%{text}%"
+
+    rewritten = llm_rewrite_query(text)
+    query =(rewritten.get("query") or text).strip()
+    
+    pattern = f"%{query}%"
     rows = fetch_all(SEARCH_PRODUCTS, (pattern, pattern, pattern, limit))
 
     # Build unique store buttons from results
