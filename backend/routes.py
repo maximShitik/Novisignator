@@ -6,6 +6,7 @@ from queries import (
     SEARCH_PRODUCTS,
     GET_COUPON_BY_STORE,
     GET_BEST_AD_BY_STORE,
+    GET_ROUTE_BY_STORE,
 )
 
 _SESSIONS = {}
@@ -153,3 +154,21 @@ def chat_coupon():
     # answer == "no" or anything else
     messages = [{"role": "assistant", "text": "מנתב לניווט."}]
     return jsonify(_response(session_id, messages=messages, coupon_code=None, ad=ad_obj))
+
+
+@api_bp.route("/nav/route", methods=["GET"])
+def nav_route():
+    store_id = request.args.get("store_id", type=int)
+    if not store_id:
+        return jsonify({"ok": False, "error": "missing store_id"}), 400
+
+    row = fetch_one(GET_ROUTE_BY_STORE, (store_id,))
+    if not row:
+        return jsonify({"ok": False, "error": "route not found"}), 404
+
+    return jsonify({
+        "ok": True,
+        "store_id": row["store_id"],
+        "map_target_id": row["map_target_id"],
+        "route_path_d": row["route_path_d"],
+    })

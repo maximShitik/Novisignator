@@ -334,3 +334,7 @@ video{
   stroke: rgba(124,247,255,0.75);
   stroke-width: 10;
 }
+
+[hidden] { 
+  display: none !important; 
+}

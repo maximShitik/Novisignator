@@ -13,6 +13,10 @@ const LS_SELECTED_STORE_ID = "sns_selected_store_id";
 const LS_SELECTED_STORE_NAME = "sns_selected_store_name";
 const LS_COUPON_CODE = "sns_coupon_code";
 
+
+storesMessage.hidden = true;
+couponQuestion.hidden = true;
+
 function getSessionId() {
   let sid = localStorage.getItem(LS_SESSION_KEY);
   if (!sid) {
@@ -142,9 +146,9 @@ function renderCouponButtons(resp) {
 
       // decide where to go
       if (b.answer === "yes") {
-        window.location.href = "coupon.html";
+        window.location.href = "/coupon";
       } else {
-        window.location.href = "navigate.html";
+        window.location.href = "/navigate";
       }
     });
 
