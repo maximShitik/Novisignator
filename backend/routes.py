@@ -146,7 +146,7 @@ def chat_message():
 
     messages = [{
         "role": "assistant",
-        "text": "מצאתי חנויות רלוונטיות. על איזו חנות ללחוץ?"
+        
     }]
     return jsonify(_response(session_id, messages=messages, store_buttons=store_buttons))
 
