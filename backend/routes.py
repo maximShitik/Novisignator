@@ -144,11 +144,8 @@ def chat_message():
             seen.add(sid)
             store_buttons.append({"store_id": sid, "store_name": r["store_name"]})
 
-    messages = [{
-        "role": "assistant",
-        
-    }]
-    return jsonify(_response(session_id, messages=messages, store_buttons=store_buttons))
+   
+    return jsonify(_response(session_id, store_buttons=store_buttons))
 
 
 @api_bp.route("/chat/store-click", methods=["POST"])

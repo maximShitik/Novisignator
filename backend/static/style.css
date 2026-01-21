@@ -121,6 +121,12 @@ button:active, .btn:active{ transform: scale(0.98); }
   border-color: var(--stroke);
   font-weight:700;
 }
+.actions{
+  display: flex;
+  gap: 12px;
+  justify-content: flex-start; /* או center */
+  flex-direction: row;
+}
 
 .btn.ghost, button.ghost{
   background: rgba(255,255,255,0.03);
@@ -342,4 +348,8 @@ video{
 
 [hidden] { 
   display: none !important; 
+}
+
+#btnNewChat {
+  margin-top: 12px;
 }
