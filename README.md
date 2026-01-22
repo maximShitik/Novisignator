@@ -1,4 +1,3 @@
-# Novisignator
 # Novisignator — Smart Mall Navigator  
 **QR → Chat → Store → Coupon → Digital Signage**
 
