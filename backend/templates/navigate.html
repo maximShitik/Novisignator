@@ -5,7 +5,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart NoviSignator - Navigation</title>
-<link rel="stylesheet" href="{{url_for('static',filename='css/style.css)}}" />
+  <link rel="stylesheet" href= "{{url_for('static',filename='css/style.css')}}"/>
 </head>
 
 <body>
@@ -24,17 +24,19 @@
 
 
         <div class="map-container" id="mapContainer">
-  <div class="map-canvas">
-   <img class="map-img" id="routeImg" src="{{url_for('static,filename='assets/mall.png')}}" alt="מפת הקניון" />
+          <div class="map-canvas">
+            {% set mall_img = url_for("static", filename="assets/mall.png") %}
+           <img class="map-img" id="routeImg" src="{{ mall_img }}" alt="מפת הקניון">
 
 
-    <!-- <svg class="map-overlay" viewBox="0 0 1395 3645" preserveAspectRatio="xMidYMid meet">
+
+            <!-- <svg class="map-overlay" viewBox="0 0 1395 3645" preserveAspectRatio="xMidYMid meet">
       <path id="routePath" d=""
             fill="none" stroke-width="20"
             stroke-linecap="round" stroke-linejoin="round"/>
     </svg> -->
-  </div>
-</div>
+          </div>
+        </div>
 
 
 
@@ -45,7 +47,7 @@
       </section>
     </main>
 
-    <script src="{{ url_for('static', filename='js/nav.js') }}"></script>
+    <script src="{{url_for('static',filename='js/nav.js')}}"></script>
   </div>
 </body>
 

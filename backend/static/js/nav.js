@@ -1,35 +1,41 @@
-const img = document.getElementById("routeImg");
-const title = document.getElementById("navTitle");
+(() => {
+  const img = document.getElementById("routeImg");
+  const title = document.getElementById("navTitle");
+  if (!img && !title) return;
 
-const storeId = localStorage.getItem("sns_selected_store_id");
-const storeName = localStorage.getItem("sns_selected_store_name");
+  const LS = {
+    STORE_ID: "sns_selected_store_id",
+    STORE_NAME: "sns_selected_store_name",
+  };
 
-if (title && storeName) {
-  title.textContent = `ניווט ל-${storeName}`;
-}
+  const storeId = localStorage.getItem(LS.STORE_ID);
+  const storeName = localStorage.getItem(LS.STORE_NAME);
 
-async function loadRoute() {
-  if (!storeId) return null;
+  if (title) title.textContent = storeName ? `ניווט ל-${storeName}` : "ניווט";
 
-  const res = await fetch(`/nav/route?store_id=${encodeURIComponent(storeId)}`);
-  if (!res.ok) return null;
+  const loadRoute = async () => {
+    if (!storeId) return null;
 
-  const data = await res.json();
-  return data.route_path_d || null; // <-- זה השדה הנכון אצלך
-}
+    const res = await fetch(`/nav/route?store_id=${encodeURIComponent(storeId)}`);
+    if (!res.ok) return null;
 
-(async () => {
-  if (!storeId || !img) return;
+    const contentType = res.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) return null;
 
-  const route = await loadRoute();
-  if (!route) return;
+    const data = await res.json();
+    return data?.route_path_d || null;
+  };
 
-  img.src = route;
+  (async () => {
+    if (!storeId || !img) return;
 
-  // אנימציה קטנה (אופציונלי)
-  img.style.opacity = "0";
-  img.style.transition = "opacity 250ms ease-in-out";
-  requestAnimationFrame(() => {
-    img.style.opacity = "1";
-  });
+    const route = await loadRoute();
+    if (!route) return;
+
+    img.src = route;
+
+    img.style.opacity = "0";
+    img.style.transition = "opacity 250ms ease-in-out";
+    requestAnimationFrame(() => (img.style.opacity = "1"));
+  })();
 })();

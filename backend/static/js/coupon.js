@@ -1,12 +1,16 @@
-const codeEl = document.getElementById("couponCode");
-const storeEl = document.getElementById("couponStore");
+(() => {
+  const codeEl = document.getElementById("couponCode");
+  const storeEl = document.getElementById("couponStore");
+  if (!codeEl && !storeEl) return;
 
-const storeName = localStorage.getItem("sns_selected_store_name");
-const couponCode = localStorage.getItem("sns_coupon_code");
+  const LS = {
+    STORE_NAME: "sns_selected_store_name",
+    COUPON_CODE: "sns_coupon_code",
+  };
 
-if (storeEl && storeName) storeEl.textContent = storeName;
-if (codeEl && couponCode) codeEl.textContent = couponCode;
+  const storeName = localStorage.getItem(LS.STORE_NAME);
+  const couponCode = localStorage.getItem(LS.COUPON_CODE);
 
-if (codeEl && !couponCode) {
-  codeEl.textContent = "אין קופון זמין";
-}
+  if (storeEl) storeEl.textContent = storeName || "לא נבחרה חנות";
+  if (codeEl) codeEl.textContent = couponCode || "אין קופון זמין";
+})();

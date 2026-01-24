@@ -1,196 +1,221 @@
-const form = document.getElementById("chatForm");
-const input = document.getElementById("chatInput");
-const messages = document.getElementById("messages");
+(() => {
+  const qs = (sel, root = document) => root.querySelector(sel);
 
-const storesMessage = document.getElementById("storesMessage");
-const storeChips = document.getElementById("storeChips");
-const couponQuestion = document.getElementById("couponQuestion");
-const statusPill = document.getElementById("statusPill");
+  const form = qs("#chatForm");
+  const input = qs("#chatInput");
+  const messages = qs("#messages");
+  if (!form || !input || !messages) return;
 
-const API_BASE = ""; // same origin (Flask serves the page)
-const LS_SESSION_KEY = "sns_session_id";
-const LS_SELECTED_STORE_ID = "sns_selected_store_id";
-const LS_SELECTED_STORE_NAME = "sns_selected_store_name";
-const LS_COUPON_CODE = "sns_coupon_code";
+  const storesMessage = qs("#storesMessage");
+  const storeChips = qs("#storeChips");
+  const couponQuestion = qs("#couponQuestion");
+  const statusPill = qs("#statusPill");
 
+  const LS = {
+    SESSION: "sns_session_id",
+    STORE_ID: "sns_selected_store_id",
+    STORE_NAME: "sns_selected_store_name",
+    COUPON_CODE: "sns_coupon_code",
+  };
 
-storesMessage.hidden = true;
-couponQuestion.hidden = true;
+  if (storesMessage) storesMessage.hidden = true;
+  if (couponQuestion) couponQuestion.hidden = true;
 
-function getSessionId() {
-  let sid = localStorage.getItem(LS_SESSION_KEY);
-  if (!sid) {
-    sid = "s_" + Math.random().toString(36).slice(2, 10);
-    localStorage.setItem(LS_SESSION_KEY, sid);
-  }
-  return sid;
-}
+  const scrollToBottom = () => {
+    messages.scrollTop = messages.scrollHeight;
+  };
 
-function setStatus(text) {
-  if (statusPill) statusPill.textContent = text;
-}
+  const setStatus = (text) => {
+    if (statusPill) statusPill.textContent = text;
+  };
 
-function addMessage(text, who) {
-  const msg = document.createElement("div");
-  msg.className = `msg ${who}`;
+  const getSessionId = () => {
+    let sid = localStorage.getItem(LS.SESSION);
+    if (!sid) {
+      sid = "s_" + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem(LS.SESSION, sid);
+    }
+    return sid;
+  };
 
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-  bubble.textContent = text;
+  const addMessage = (text, who) => {
+    const msg = document.createElement("div");
+    msg.className = `msg ${who}`;
 
-  const meta = document.createElement("div");
-  meta.className = "meta";
-  meta.textContent = who === "user" ? "אתה" : "בוט";
+    const bubble = document.createElement("div");
+    bubble.className = "bubble";
+    bubble.textContent = text;
 
-  msg.appendChild(bubble);
-  msg.appendChild(meta);
-  messages.appendChild(msg);
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = who === "user" ? "אתה" : "בוט";
 
-  messages.scrollTop = messages.scrollHeight;
-}
+    msg.appendChild(bubble);
+    msg.appendChild(meta);
+    messages.appendChild(msg);
+    scrollToBottom();
+    return msg;
+  };
 
-async function postJson(path, body) {
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  return await res.json();
-}
-
-function showStores(stores) {
-  storeChips.innerHTML = "";
-
-  stores.forEach((s) => {
-    const btn = document.createElement("button");
-    btn.className = "chip";
-    btn.type = "button";
-    btn.textContent = s.store_name;
-
-    btn.addEventListener("click", async () => {
-      const session_id = getSessionId();
-
-      // save selection for other pages
-      localStorage.setItem(LS_SELECTED_STORE_ID, String(s.store_id));
-      localStorage.setItem(LS_SELECTED_STORE_NAME, s.store_name);
-
-      addMessage(`בחרתי: ${s.store_name}`, "user");
-      setStatus("שולח...");
-
-      const resp = await postJson("/chat/store-click", {
-        session_id,
-        store_id: s.store_id,
-      });
-
-      // show bot message(s)
-      (resp.messages || []).forEach((m) => addMessage(m.text, "bot"));
-
-      // show coupon question + build buttons dynamically
-      renderCouponButtons(resp);
-      setStatus("מוכן");
+  const postJson = async (path, body) => {
+    const res = await fetch(path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
     });
 
-    storeChips.appendChild(btn);
-  });
+    if (!res.ok) {
+      return {
+        messages: [{ text: "שגיאה בשרת או ברשת. נסה שוב." }],
+        ui: {},
+        data: {},
+      };
+    }
 
-  // move + show stores block
-  messages.appendChild(storesMessage);
-  storesMessage.hidden = false;
-  messages.scrollTop = messages.scrollHeight;
-}
+    const contentType = res.headers.get("content-type") || "";
+    if (!contentType.includes("application/json")) {
+      return {
+        messages: [{ text: "השרת החזיר תשובה לא צפויה. נסה שוב." }],
+        ui: {},
+        data: {},
+      };
+    }
 
-function renderCouponButtons(resp) {
-  // Coupon question block contains .actions with <a> links in your HTML.
-  // We'll replace them with real buttons that call the API.
-  const actions = couponQuestion.querySelector(".actions");
-  actions.innerHTML = "";
+    return await res.json();
+  };
 
-  const buttons = (resp.ui && resp.ui.coupon_buttons) ? resp.ui.coupon_buttons : [
-    { answer: "yes", label: "כן" },
-    { answer: "no", label: "לא" }
-  ];
+  const saveSelectedStore = (store) => {
+    localStorage.setItem(LS.STORE_ID, String(store.store_id));
+    localStorage.setItem(LS.STORE_NAME, store.store_name);
+  };
 
-  buttons.forEach((b) => {
-    const btn = document.createElement("button");
-    btn.className = b.answer === "yes" ? "btn primary" : "btn secondary";
-    btn.type = "button";
-    btn.textContent = b.label;
+  const saveCouponCode = (code) => {
+    if (code) localStorage.setItem(LS.COUPON_CODE, code);
+    else localStorage.removeItem(LS.COUPON_CODE);
+  };
 
-    btn.addEventListener("click", async () => {
-      const session_id = getSessionId();
-      const store_id_str = localStorage.getItem(LS_SELECTED_STORE_ID);
-      const store_id = store_id_str ? parseInt(store_id_str, 10) : null;
+  const showStores = (stores) => {
+    if (!storeChips || !storesMessage) return;
 
-      if (!store_id) {
-        addMessage("לא נמצאה חנות נבחרת. בחר חנות קודם.", "bot");
-        return;
-      }
+    storeChips.innerHTML = "";
 
-      setStatus("שולח...");
+    stores.forEach((s) => {
+      const btn = document.createElement("button");
+      btn.className = "chip";
+      btn.type = "button";
+      btn.textContent = s.store_name;
 
-      const resp2 = await postJson("/chat/coupon", {
-        session_id,
-        store_id,
-        answer: b.answer,
+      btn.addEventListener("click", async () => {
+        const session_id = getSessionId();
+
+        saveSelectedStore(s);
+        addMessage(`בחרתי: ${s.store_name}`, "user");
+
+        setStatus("שולח...");
+
+        const resp = await postJson("/chat/store-click", {
+          session_id,
+          store_id: s.store_id,
+        });
+
+        (resp.messages || []).forEach((m) => addMessage(m.text, "bot"));
+
+        renderCouponButtons(resp);
+        setStatus("מוכן");
       });
 
-      // save coupon if exists
-      if (resp2.data && resp2.data.coupon_code) {
-        localStorage.setItem(LS_COUPON_CODE, resp2.data.coupon_code);
-      } else {
-        localStorage.removeItem(LS_COUPON_CODE);
-      }
-
-      // optional: save ad info too (for future)
-      // localStorage.setItem("sns_ad", JSON.stringify(resp2.data?.ad || null));
-
-      // decide where to go
-      if (b.answer === "yes") {
-        window.location.href = "/coupon";
-      } else {
-        window.location.href = "/navigate";
-      }
+      storeChips.appendChild(btn);
     });
 
-    actions.appendChild(btn);
+    messages.appendChild(storesMessage);
+    storesMessage.hidden = false;
+    scrollToBottom();
+  };
+
+  const renderCouponButtons = (resp) => {
+    if (!couponQuestion) return;
+
+    const actions = qs(".actions", couponQuestion);
+    if (!actions) return;
+
+    actions.innerHTML = "";
+
+    const buttons =
+      resp?.ui?.coupon_buttons ?? [
+        { answer: "yes", label: "כן" },
+        { answer: "no", label: "לא" },
+      ];
+
+    buttons.forEach((b) => {
+      const btn = document.createElement("button");
+      btn.className = b.answer === "yes" ? "btn primary" : "btn secondary";
+      btn.type = "button";
+      btn.textContent = b.label;
+
+      btn.addEventListener("click", async () => {
+        const session_id = getSessionId();
+        const store_id_str = localStorage.getItem(LS.STORE_ID);
+        const store_id = store_id_str ? parseInt(store_id_str, 10) : null;
+
+        if (!store_id) {
+          addMessage("לא נמצאה חנות נבחרת. בחר חנות קודם.", "bot");
+          return;
+        }
+
+        setStatus("שולח...");
+
+        const resp2 = await postJson("/chat/coupon", {
+          session_id,
+          store_id,
+          answer: b.answer,
+        });
+
+        saveCouponCode(resp2?.data?.coupon_code || null);
+
+        if (b.answer === "yes") window.location.href = "/coupon";
+        else window.location.href = "/navigate";
+      });
+
+      actions.appendChild(btn);
+    });
+
+    messages.appendChild(couponQuestion);
+    couponQuestion.hidden = false;
+    scrollToBottom();
+  };
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    if (storesMessage) storesMessage.hidden = true;
+    if (couponQuestion) couponQuestion.hidden = true;
+
+    addMessage(text, "user");
+    input.value = "";
+
+    const thinkingMsg = addMessage("מחפש... רגע", "bot");
+    setStatus("מחפש...");
+
+    const session_id = getSessionId();
+
+    const resp = await postJson("/chat/message", {
+      session_id,
+      text,
+      limit: 10,
+    });
+
+    if (thinkingMsg && thinkingMsg.parentNode) {
+      thinkingMsg.parentNode.removeChild(thinkingMsg);
+    }
+
+    (resp.messages || []).forEach((m) => addMessage(m.text, "bot"));
+
+    const stores = resp?.ui?.store_buttons ?? [];
+    if (stores.length > 0) showStores(stores);
+
+    setStatus("מוכן");
   });
-
-  messages.appendChild(couponQuestion);
-  couponQuestion.hidden = false;
-  messages.scrollTop = messages.scrollHeight;
-}
-
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const text = input.value.trim();
-  if (!text) return;
-
-  // hide previous blocks
-  storesMessage.hidden = true;
-  couponQuestion.hidden = true;
-
-  addMessage(text, "user");
-  input.value = "";
-
-  setStatus("מחפש...");
-  addMessage("מחפש... רגע ", "bot");
-
-  const session_id = getSessionId();
-
-  const resp = await postJson("/chat/message", {
-    session_id,
-    text,
-    limit: 10,
-  });
-
-  // show bot message(s)
-  (resp.messages || []).forEach((m) => addMessage(m.text, "bot"));
-
-  const stores = (resp.ui && resp.ui.store_buttons) ? resp.ui.store_buttons : [];
-  if (stores.length > 0) {
-    showStores(stores);
-  }
-
-  setStatus("מוכן");
-});
+})();
