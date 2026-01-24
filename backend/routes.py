@@ -72,7 +72,6 @@ def chat_message():
     sess["stage"] = "searching"
     sess["last_text"] = text
 
-    # 1) אם אין טקסט – מחזירים מיד
     if not text:
         messages = [{
             "role": "assistant",
@@ -80,13 +79,11 @@ def chat_message():
         }]
         return jsonify(_response(session_id, messages=messages))
 
-    # 2) מביאים מועמדים מה-DB לפי הטקסט הגולמי
     rewritten = llm_pick_best_query(text, [])
     queries = rewritten.get("queries") or [text]
 
     print("LLM queries:", queries)
 
-    # 2) עכשיו מנסים DB עם כל query
     rows = []
     for q in queries:
         p = f"%{q}%"
@@ -94,7 +91,6 @@ def chat_message():
         if rows:
             break
 
-    # 3) רק אם לא מצאנו כלום – ננסה גם candidates מה-DB
     if not rows:
         pattern = f"%{text}%"
         candidates = fetch_all(GET_SUGGESTIONS, (pattern, 20))
@@ -111,9 +107,8 @@ def chat_message():
 
     queries = rewritten.get("queries") or [text]
 
-    # 4) מנסים לחפש ב-DB לפי כל query עד שיש תוצאות
     rows = []
-    used_query = text  # רק כדי לדעת מה עבד (לא חובה)
+    used_query = text 
     for q in queries:
         if not isinstance(q, str):
             continue
@@ -127,7 +122,6 @@ def chat_message():
         if rows:
             break
 
-    # 5) אם עדיין אין תוצאות
     if not rows:
         messages = [{
             "role": "assistant",
@@ -135,7 +129,6 @@ def chat_message():
         }]
         return jsonify(_response(session_id, messages=messages, store_buttons=[]))
 
-    # 6) Build unique store buttons
     seen = set()
     store_buttons = []
     for r in rows:
@@ -181,7 +174,6 @@ def chat_coupon():
     sess["selected_store_id"] = store_id
     sess["stage"] = "end"
 
-    # Always return the "best" ad (will fallback to default if coupon_yes doesn't exist)
     best_ad = fetch_one(GET_BEST_AD_BY_STORE, (store_id,))
     ad_obj = None
     if best_ad:
@@ -203,7 +195,6 @@ def chat_coupon():
 
         return jsonify(_response(session_id, messages=messages, coupon_code=coupon_code, ad=ad_obj))
 
-    # answer == "no" or anything else
     messages = [{"role": "assistant", "text": "מנתב לניווט."}]
     return jsonify(_response(session_id, messages=messages, coupon_code=None, ad=ad_obj))
 
