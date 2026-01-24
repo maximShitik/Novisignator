@@ -49,7 +49,7 @@ def get_stores():
 
 @api_bp.route("/", methods=["GET"])
 def home():
-    return render_template("index.html")
+    return render_template("chat.html")
 
 
 @api_bp.route("/coupon", methods=["GET"])

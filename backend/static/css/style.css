@@ -1,13 +1,16 @@
+/* =========================
+   1) Tokens / Base
+========================= */
 :root{
-  --bg: #0b0f17;
-  --card: rgba(255,255,255,0.06);
-  --stroke: rgba(255,255,255,0.12);
-  --text: rgba(255,255,255,0.92);
-  --muted: rgba(255,255,255,0.65);
-  --accent: #7cf7ff;
+  --bg:#0b0f17;
+  --card:rgba(255,255,255,0.06);
+  --stroke:rgba(255,255,255,0.12);
+  --text:rgba(255,255,255,0.92);
+  --muted:rgba(255,255,255,0.65);
+  --accent:#7cf7ff;
   --accent2:#ffe66d;
   --danger:#ff6b6b;
-  --radius: 18px;
+  --radius:18px;
 }
 
 *{ box-sizing:border-box }
@@ -15,26 +18,24 @@
 html, body{
   margin:0;
   padding:0;
-  height: 100%;
+  height:100%;
 }
 
 body{
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-  background: radial-gradient(900px 600px at 80% 0%, rgba(124,247,255,0.14), transparent 60%),
-              radial-gradient(900px 600px at 10% 100%, rgba(255,230,109,0.12), transparent 60%),
-              var(--bg);
+  background:
+    radial-gradient(900px 600px at 80% 0%, rgba(124,247,255,0.14), transparent 60%),
+    radial-gradient(900px 600px at 10% 100%, rgba(255,230,109,0.12), transparent 60%),
+    var(--bg);
   color: var(--text);
   min-height:100vh;
   display:flex;
   justify-content:center;
 }
 
-main {
-  height: calc(100vh - 70px); /* 70px ≈ גובה ה-topbar */
-  display: flex;
-}
-
-
+/* =========================
+   2) App Layout
+========================= */
 .app{
   width:min(520px, 100%);
   padding:16px 16px 22px;
@@ -44,7 +45,7 @@ main {
   display:flex;
   justify-content:space-between;
   align-items:center;
-  margin: 8px 0 14px;
+  margin:8px 0 14px;
 }
 
 .brand{
@@ -61,12 +62,20 @@ main {
   color: var(--muted);
 }
 
+main{
+  height: calc(100vh - 70px); /* 70px ≈ גובה ה-topbar */
+  display:flex;
+}
+
 .quick-nav{
   display:flex;
   gap:10px;
-  margin: 0 0 14px;
+  margin:0 0 14px;
 }
 
+/* =========================
+   3) Common Components
+========================= */
 .card{
   background: var(--card);
   border: 1px solid var(--stroke);
@@ -77,8 +86,8 @@ main {
 }
 
 h1{
-  margin: 4px 0 8px;
-  font-size: 26px;
+  margin:4px 0 8px;
+  font-size:26px;
   line-height:1.25;
 }
 
@@ -90,7 +99,6 @@ p{
 
 .muted{ color: var(--muted); }
 
-/* Buttons (works for <button> and <a>) */
 button, .btn{
   border:1px solid var(--stroke);
   background: rgba(255,255,255,0.05);
@@ -121,12 +129,6 @@ button:active, .btn:active{ transform: scale(0.98); }
   border-color: var(--stroke);
   font-weight:700;
 }
-.actions{
-  display: flex;
-  gap: 12px;
-  justify-content: flex-start; /* או center */
-  flex-direction: row;
-}
 
 .btn.ghost, button.ghost{
   background: rgba(255,255,255,0.03);
@@ -135,17 +137,32 @@ button:active, .btn:active{ transform: scale(0.98); }
 .row{
   display:flex;
   gap:10px;
-  margin-top: 10px;
+  margin-top:10px;
 }
 .row .btn, .row button{ flex:1; }
 
-/* Chat */
-
-.messages {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 8px;
+.actions{
+  display:flex;
+  gap:12px;
+  justify-content:flex-start;
+  flex-direction:row;
 }
+
+/* =========================
+   4) Chat Screen
+========================= */
+.card.chat{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+}
+
+.messages{
+  flex:1;
+  overflow-y:auto;
+  padding-bottom:8px;
+}
+
 .msg{
   display:flex;
   flex-direction:column;
@@ -156,11 +173,11 @@ button:active, .btn:active{ transform: scale(0.98); }
 .msg.bot{ align-items:flex-end; }
 
 .bubble{
-  max-width: 92%;
+  max-width:92%;
   border:1px solid var(--stroke);
   background: rgba(0,0,0,0.18);
-  padding: 12px 12px;
-  border-radius: 16px;
+  padding:12px 12px;
+  border-radius:16px;
   line-height:1.5;
 }
 
@@ -170,7 +187,7 @@ button:active, .btn:active{ transform: scale(0.98); }
 }
 
 .meta{
-  font-size: 12px;
+  font-size:12px;
   color: var(--muted);
 }
 
@@ -187,29 +204,27 @@ button:active, .btn:active{ transform: scale(0.98); }
   background: rgba(255,255,255,0.05);
   color: var(--text);
   padding: 10px 12px;
-  border-radius: 999px;
-  font-weight: 800;
+  border-radius:999px;
+  font-weight:800;
   cursor:pointer;
 }
 
 /* Composer */
-.composer {
-  margin-top: 8px;
-}
+.composer{ margin-top:8px; }
 
 .input-wrap{
-  position: relative;
-  width: 100%;
+  position:relative;
+  width:100%;
 }
 
 .input{
-  width: 100%;
-  border-radius: 14px;
+  width:100%;
+  border-radius:14px;
   border:1px solid var(--stroke);
   background: rgba(0,0,0,0.22);
   color: var(--text);
-  padding: 14px 12px 14px 56px; 
-  font-size: 16px;
+  padding: 14px 12px 14px 56px;
+  font-size:16px;
   outline:none;
 }
 
@@ -218,54 +233,52 @@ button:active, .btn:active{ transform: scale(0.98); }
   top:50%;
   left:8px;
   transform: translateY(-50%);
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 12px;
+  height:36px;
+  padding:0 14px;
+  border-radius:12px;
   border:1px solid rgba(124,247,255,0.35);
   background: rgba(124,247,255,0.12);
   color: var(--text);
-  font-size: 14px;
-  font-weight: 800;
-  cursor: pointer;
-  white-space: nowrap;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  white-space:nowrap;
 }
+
 .send-btn:active{ transform: translateY(-50%) scale(0.98); }
 
-@media (max-width: 360px){
-  .send-btn{ padding: 0 10px; font-size: 13px; }
-  .input{ padding-left: 50px; }
+@media (max-width:360px){
+  .send-btn{ padding:0 10px; font-size:13px; }
+  .input{ padding-left:50px; }
 }
 
-/* Coupon card */
+#btnNewChat{ margin-top:12px; }
+
+/* =========================
+   5) Coupon Screen
+========================= */
 .coupon-card{
   display:flex;
   align-items:stretch;
   justify-content:space-between;
   gap:12px;
-  padding: 14px;
-  border-radius: 16px;
+  padding:14px;
+  border-radius:16px;
   border:1px solid rgba(255,230,109,0.35);
   background: rgba(255,230,109,0.08);
-  margin-top: 10px;
+  margin-top:10px;
 }
-.card.chat {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-
 
 .coupon-left .label{
   color: var(--muted);
   font-weight:700;
-  margin-bottom: 6px;
+  margin-bottom:6px;
 }
 
 .code{
-  font-size: 26px;
-  font-weight: 900;
-  letter-spacing: 1px;
+  font-size:26px;
+  font-weight:900;
+  letter-spacing:1px;
 }
 
 .badge{
@@ -278,58 +291,45 @@ button:active, .btn:active{ transform: scale(0.98); }
   white-space:nowrap;
 }
 
-/* Video */
-video{
-  width:100%;
-  border-radius: 16px;
-  border:1px solid var(--stroke);
-  background: rgba(0,0,0,0.3);
-}
-
-.nav-screen{
-  height: calc(100vh - 70px);
-  display: flex;
-}
-
+/* =========================
+   6) Navigation Screen
+========================= */
 .nav-card{
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 12px;
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  gap:12px;
 }
 
 .map-container{
-  position: relative;
-  flex: 1;
-  border-radius: 16px;
-  border: 1px solid var(--stroke);
-  overflow: auto;            /* ✅ מאפשר גלילה */
+  position:relative;
+  flex:1;
+  border-radius:16px;
+  border:1px solid var(--stroke);
+  overflow:auto;
   background: rgba(0,0,0,0.18);
 }
 
-/* פנימי: קובע את "קנבס המפה" */
 .map-canvas{
-  position: relative;
-  width: 100%;
+  position:relative;
+  width:100%;
 }
 
-/* המפה עצמה - שומרת יחס, ממלאת רוחב */
 .map-img{
-  display: block;
-  width: 100%;
-  height: auto;              /* ✅ הגובה גדל => יהיה scroll */
+  display:block;
+  width:100%;
+  height:auto;
 }
 
-/* overlay יושב בדיוק על התמונה */
 .map-overlay{
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
 }
 
-/* Route styling */
+/* Route styling (if SVG enabled) */
 #routePath{
   stroke: rgba(255, 124, 124, 0.95);
   filter: drop-shadow(0 0 6px rgba(124,247,255,0.35));
@@ -343,13 +343,17 @@ video{
 #startDot, #endDot{
   fill: rgba(255,255,255,0.95);
   stroke: rgba(124,247,255,0.75);
-  stroke-width: 10;
+  stroke-width:10;
 }
 
-[hidden] { 
-  display: none !important; 
+/* =========================
+   7) Utilities
+========================= */
+video{
+  width:100%;
+  border-radius:16px;
+  border:1px solid var(--stroke);
+  background: rgba(0,0,0,0.3);
 }
 
-#btnNewChat {
-  margin-top: 12px;
-}
+[hidden]{ display:none !important; }

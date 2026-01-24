@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Smart NoviSignator - Chat</title>
-  <link rel="stylesheet" href="../static/style.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
 
 <body>
@@ -43,7 +43,6 @@
             <div class="bubble">
               רוצה לקבל קופון הנחה? שלח את החנות הנבחרת לפרסום במסך ה־NoviSign!
               <div class="actions" role="group" aria-label="בחירת קופון">
-                <!-- בדמו: פשוט לינקים לעמודים -->
                 <a class="btn primary" href="/coupon">כן, תן קופון</a>
                 <a class="btn secondary" href="/navigate">לא, המשך לניווט</a>
               </div>
@@ -64,6 +63,6 @@
 
     <footer class="footer muted" role="contentinfo"></footer>
   </div>
-  <script src="../static/chat.js"></script>
+  <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </body>
 </html>
