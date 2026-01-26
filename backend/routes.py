@@ -8,6 +8,7 @@ from queries import (
     GET_BEST_AD_BY_STORE,
     GET_ROUTE_BY_STORE,
     GET_SUGGESTIONS,
+    GET_STORES,
 )
 
 _SESSIONS = {}
@@ -44,7 +45,8 @@ def health():
 
 @api_bp.route("/stores", methods=["GET"])
 def get_stores():
-    return jsonify({"status": "ok"})
+    rows = fetch_all(GET_STORES)
+    return jsonify({"status": "ok", "stores": rows})
 
 
 @api_bp.route("/", methods=["GET"])
