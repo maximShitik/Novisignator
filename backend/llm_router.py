@@ -28,7 +28,7 @@ Return ONLY valid JSON with this exact structure:
 Rules:
 - Hebrew only.
 - Queries must be short noun phrases suitable for SQL LIKE.
-- Provide 3–5 alternative queries.
+- Provide 3-5 alternative queries.
 
 User request:
 {text}
