@@ -1,7 +1,6 @@
-langchain
-langchain-openai
-python-dotenv
-langchain-community
-pyboxen
 flask
+psycopg2-binary
+redis
+kafka-python
+boto3
 openai
