@@ -1,10 +1,49 @@
 
 
+YES = { "success": True, "message": "Coupon claimed!" }
+NO = { "success": False, "message": "Coupon not found" }
+NO_COUPONS = { "success": False, "coupons": [] }
+
+
 class CouponService():
     def __init__(self,coupon_repo,kafka_client):
         self.coupon_repo = coupon_repo
         self.kafka_client = kafka_client
 
-    def display_coupons(self,store_id): pass
+    def display_coupons(self,store_id):
+        coupons_description = []
+        try:
+            coupons = self.coupon_repo.get_by_store(store_id)
 
-    def claim_coupon(self,coupon_code): pass
+            if coupons:
+                for coupon in coupons:
+                    coupons_description.append(coupon[2])
+                return { "success": True, "coupons": coupons_description }
+            else:
+                return NO_COUPONS
+        except Exception as e:
+            raise Exception(f"CouponService.display_coupons failed: {e}")
+        
+
+    def claim_coupon(self,coupon_code):
+        try:
+           coupon = self.coupon_repo.get_by_code(coupon_code)
+
+           if coupon:
+                topic = "mall.events.v1"
+                message = {
+                    "event": "COUPON_CLAIMED",
+                    "coupon_code": coupon_code,
+                    "store_id":coupon[0]}
+                
+                self.kafka_client.publish(topic, message)
+                return YES
+           else:
+               return NO
+        except Exception as e:
+            raise Exception(f"CouponService.claim_coupon failed: {e}")
+        
+
+
+
+
