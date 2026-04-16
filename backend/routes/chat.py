@@ -1,11 +1,13 @@
-from flask import Blueprint
+from flask import Blueprint,jsonify,request
 
-chat_bp = Blueprint('chat', __name__)
 
-def create_chat_route(chat_service):
-
+def create_chat_routes(chat_service):
+    chat_bp = Blueprint('chat', __name__)
 
     @chat_bp.route('/chat', methods=['POST'])
     def chat():
-        pass
-
+        data = request.get_json()
+        input = data['message']
+        result = chat_service.handle_message(input)
+        return jsonify(result)
+    return chat_bp

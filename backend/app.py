@@ -1,5 +1,5 @@
 from flask import Flask
-from routes.chat import chat_bp
+from routes.chat import create_chat_routes
 from routes.coupon import create_coupon_routes
 from routes.navigation import navigation_bp
 from routes.session import session_bp
@@ -22,8 +22,8 @@ from repositories.navigation_repository import NavigationRepository
 
 DATABASE_URL = "postgresql://user:password@localhost/malldb"
 KAFKA_SERVERS = "localhost:9092"
-REDIS_HOST = "localhost:9090"
-REDIS_PORT = "9090"
+REDIS_HOST = "localhost"
+REDIS_PORT = "6379"
 
 kafka_producer = create_kafka_producer(KAFKA_SERVERS)
 db_pool = create_db_pool(DATABASE_URL)
@@ -41,6 +41,8 @@ chat_service = ChatService(store_repo,product_repo,redis_client,llm_client,navig
 
 
 coupon_bp = create_coupon_routes(coupon_service)
+chat_bp = create_chat_routes(chat_service)
+
 
 app = Flask(__name__)
 
