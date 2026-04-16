@@ -7,18 +7,39 @@ from routes.admin import admin_bp
 
 from infrastructure.kafka import create_kafka_producer
 from infrastructure.db import create_db_pool
-from repositories.coupon_repository import CouponRepository
+from infrastructure.redis import create_redis_client
+
+
+from services.chat_service import ChatService
 from services.coupon_service import CouponService
+from services.navigation_service import NavigationService
+
+from repositories.coupon_repository import CouponRepository
+from repositories.store_repository import StoreRepository
+from repositories.product_repository import ProductRepository
+from repositories.navigation_repository import NavigationRepository
+
 
 DATABASE_URL = "postgresql://user:password@localhost/malldb"
 KAFKA_SERVERS = "localhost:9092"
+REDIS_HOST = "localhost:9090"
+REDIS_PORT = "9090"
 
 kafka_producer = create_kafka_producer(KAFKA_SERVERS)
 db_pool = create_db_pool(DATABASE_URL)
-
+redis_client = create_redis_client(REDIS_HOST,REDIS_PORT)
+llm_client = None
 
 coupon_repo = CouponRepository(db_pool)
+store_repo = StoreRepository(db_pool)
+product_repo = ProductRepository(db_pool)
+navigation_repo = NavigationRepository(db_pool)
+
 coupon_service = CouponService(coupon_repo, kafka_producer)
+navigation_service = NavigationService(navigation_repo,redis_client)
+chat_service = ChatService(store_repo,product_repo,redis_client,llm_client,navigation_service)
+
+
 coupon_bp = create_coupon_routes(coupon_service)
 
 app = Flask(__name__)
