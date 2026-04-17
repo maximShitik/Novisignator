@@ -1,4 +1,7 @@
 from repositories.queries.coupon_queries import GET_BY_CODE, GET_BY_STORE
+from infrastructure.logger import get_logger
+
+logger = get_logger(__name__)
 
 class CouponRepository:
     def __init__(self,db_pool):
@@ -14,7 +17,8 @@ class CouponRepository:
             coupons = cursor.fetchall()
             return coupons
         except Exception as e:
-            raise Exception(f"CouponRepository.get_by_store failed: {e}")
+            logger.error(f"CouponRepository.get_by_store failed: {e}")
+            raise
         finally:
             self.db_pool.putconn(conn)
 
@@ -28,7 +32,8 @@ class CouponRepository:
             coupon = cursor.fetchone()
             return coupon
         except Exception as e:
-            raise Exception(f"CouponRepository.get_by_code failed: {e}")
+            logger.error(f"CouponRepository.get_by_code failed: {e}")
+            raise
         finally:
             self.db_pool.putconn(conn)
 

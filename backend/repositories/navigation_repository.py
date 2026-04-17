@@ -1,5 +1,8 @@
 from repositories.queries.navigation_queries import GET_SCAN_POINT_BY_ID, GET_NAVIGATION_ROUTE,GET_ALL_ROUTES
+from infrastructure.logger import get_logger
 
+
+logger = get_logger(__name__)
 class NavigationRepository:
     def __init__(self,db_pool):
         self.db_pool = db_pool
@@ -12,7 +15,8 @@ class NavigationRepository:
             scan_point = cursor.fetchone()
             return scan_point
         except Exception as e:
-            raise Exception(f"NavigationRepository.get_scan_point_by_id failed: {e}")
+            logger.error(f"NavigationRepository.get_scan_point_by_id failed: {e}")
+            raise
         finally:
             self.db_pool.putconn(conn)
 
@@ -24,7 +28,8 @@ class NavigationRepository:
             route = cursor.fetchone()
             return route
         except Exception as e:
-            raise Exception(f"NavigationRepository.get_navigation_route failed: {e}")
+            logger.error(f"NavigationRepository.get_navigation_route failed: {e}")
+            raise
         finally:
             self.db_pool.putconn(conn)
 
@@ -39,7 +44,8 @@ class NavigationRepository:
             routes = cursor.fetchall()
             return routes
         except Exception as e:
-            raise Exception(f"NavigationRepository.get_navigation_route failed: {e}")
+            logger.error(f"NavigationRepository.get_all_routes failed: {e}")
+            raise
         finally:
             self.db_pool.putconn(conn)
 

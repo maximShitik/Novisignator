@@ -1,3 +1,5 @@
+from infrastructure.logger import get_logger
+logger = get_logger(__name__)
 
 class Screenworker():
     def __init__(self,kafka_consumer,ads_repo,s3_client,redis_client):
@@ -23,9 +25,11 @@ class Screenworker():
                         self.redis_client.set("screen:current_ad", s3_url)
                         
                     except Exception:
+                        logger.warning("Redis unavailable, falling back to DB")
                         result = self.ads_repo.get_ad_by_store_id(store_id)
                         asset_url = result[3]
                         s3_url = self.s3_client.generate_presigned_url(asset_url)
                         
             except Exception as e:
-                print(f"ScreenWorker error: {e}")
+                logger.error(f"Screenworker.run failed: {e}")
+                continue

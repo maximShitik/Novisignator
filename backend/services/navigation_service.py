@@ -1,3 +1,5 @@
+from infrastructure.logger import get_logger
+logger = get_logger(__name__)
 
 
 class NavigationService():
@@ -20,7 +22,8 @@ class NavigationService():
             return navigation_route
 
         except Exception as e:
-            raise Exception(f"NavigationService.get_route failed: {e}")
+            logger.error(f"NavigationService.get_route failed: {e}")
+            raise
         
     def warm_cache(self):
         try:
@@ -35,4 +38,5 @@ class NavigationService():
                 cache_key = f"nav:{scan_point_id}:{store_id}"
                 self.redis_client.set(cache_key,route_path_d,ex=2592000)
         except Exception as e:
-            raise Exception(f"NavigationService.warm_cache failed: {e}")
+            logger.error(f"NavigationService.warm_cache failed: {e}")
+            raise

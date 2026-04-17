@@ -1,5 +1,6 @@
 from repositories.queries.product_queries import GET_STORES_BY_PRODUCT , SEARCH
-
+from infrastructure.logger import get_logger
+logger = get_logger(__name__)
 
 class ProductRepository:
     def __init__(self,db_pool):
@@ -15,7 +16,8 @@ class ProductRepository:
             store = cursor.fetchall()
             return store
         except Exception as e:
-            raise Exception(f"ProductRepository.search failed: {e}")
+            logger.error(f"ProductRepository.search failed: {e}")
+            raise
         finally:
             self.db_pool.putconn(conn)
 
@@ -29,7 +31,8 @@ class ProductRepository:
             store = cursor.fetchall()
             return store
         except Exception as e:
-            raise Exception(f"ProductRepository.get_stores_by_product failed: {e}")
+            logger.error(f"ProductRepository.get_stores_by_product failed: {e}")
+            raise
 
         finally:
             self.db_pool.putconn(conn)

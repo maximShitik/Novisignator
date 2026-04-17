@@ -1,4 +1,6 @@
 from repositories.queries.ad_queries import GET_AD_BY_STORE_ID
+from infrastructure.logger import get_logger
+logger = get_logger(__name__)
 
 class AdRepository:
     def __init__(self, db_pool):
@@ -13,7 +15,8 @@ class AdRepository:
             ad = cursor.fetchone()
             return ad
         except Exception as e:
-            raise Exception(f"AdRepository.get_ad_by_store_id failed: {e}")
+            logger.error(f"AdRepository.get_ad_by_store_id failed: {e}")
+            raise
 
         finally:
             self.db_pool.putconn(conn)

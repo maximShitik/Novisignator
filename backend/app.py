@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask,jsonify
 from routes.chat import create_chat_routes
 from routes.coupon import create_coupon_routes
 from routes.navigation import create_navigation_route
@@ -23,7 +23,8 @@ from repositories.product_repository import ProductRepository
 from repositories.navigation_repository import NavigationRepository
 
 from backend.consts import DATABASE_URL,KAFKA_SERVERS,REDIS_HOST,REDIS_PORT,AWS_ACCESS_KEY,AWS_SECRET_KEY,AWS_REGION,S3_BUCKET,OPENAI_API_KEY,MODEL
-
+from infrastructure.logger import get_logger
+logger = get_logger(__name__)
 
  
 kafka_producer = MallKafkaProducer(KAFKA_SERVERS)
@@ -58,6 +59,11 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(screen_bp)
 navigation_service.warm_cache()
 
+
+@app.errorhandler(Exception)
+def handle_exception(e):
+    logger.error(f"Unhandled exception: {e}")
+    return jsonify({"error": "Internal server error"}), 500
 
 if __name__ == '__main__':
     app.run()

@@ -1,5 +1,6 @@
 from flask import Blueprint,jsonify,request
-
+from infrastructure.logger import get_logger
+logger = get_logger(__name__)
 
 def create_screen_routes(redis_client):
 
@@ -13,7 +14,9 @@ def create_screen_routes(redis_client):
                 return jsonify({"ad_url": None, "message": "No ad available"}), 404
             return jsonify({"ad_url": result})
         except Exception:
+            logger.error("Redis unavailable in /screen/current-ad")
             return jsonify({"ad_url": None, "message": "Service unavailable"}), 503
+
         
     return screen_bp
 

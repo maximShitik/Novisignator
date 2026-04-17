@@ -1,3 +1,5 @@
+from infrastructure.logger import get_logger
+logger = get_logger(__name__)
 
 
 class ChatService():
@@ -33,7 +35,8 @@ class ChatService():
 
             return result
         except Exception as e:
-            raise Exception(f"ChatService.handle_message failed: {e}")
+            logger.error(f"ChatService.handle_message failed: {e}")
+            raise
         
 
 

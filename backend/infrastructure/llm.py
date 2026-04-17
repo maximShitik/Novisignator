@@ -1,5 +1,7 @@
 from openai import OpenAI
 import json
+from infrastructure.logger import get_logger
+logger = get_logger(__name__)
 
 class LLM():
     def __init__(self,api_key,model):
@@ -27,4 +29,5 @@ class LLM():
             text = response.choices[0].message.content
             return json.loads(text)
         except Exception as e:
-            raise Exception(f"LLMClient.parse failed: {e}")
+            logger.error(f"LLMClient.parse failed: {e}")
+            raise

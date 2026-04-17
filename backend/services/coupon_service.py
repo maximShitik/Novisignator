@@ -1,4 +1,5 @@
-
+from infrastructure.logger import get_logger
+logger = get_logger(__name__)
 
 YES = { "success": True, "message": "Coupon claimed!" }
 NO = { "success": False, "message": "Coupon not found" }
@@ -22,7 +23,8 @@ class CouponService():
             else:
                 return NO_COUPONS
         except Exception as e:
-            raise Exception(f"CouponService.display_coupons failed: {e}")
+            logger.error(f"CouponService.display_coupons failed: {e}")
+            raise
         
 
     def claim_coupon(self,coupon_code):
@@ -41,7 +43,8 @@ class CouponService():
            else:
                return NO
         except Exception as e:
-            raise Exception(f"CouponService.claim_coupon failed: {e}")
+            logger.error(f"CouponService.claim_coupon failed: {e}")
+            raise
         
 
 

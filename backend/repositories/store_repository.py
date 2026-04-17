@@ -1,4 +1,8 @@
 from repositories.queries.store_queries import GET_BY_FLOOR , GET_BY_ID , SEARCH
+from infrastructure.logger import get_logger
+
+
+logger = get_logger(__name__)
 
 class StoreRepository:
     def __init__(self, db_pool):
@@ -13,7 +17,8 @@ class StoreRepository:
             store = cursor.fetchone()
             return store
         except Exception as e:
-            raise Exception(f"StoreRepository.get_by_id failed: {e}")
+            logger.error(f"StoreRepository.get_by_id failed: {e}")
+            raise
         finally:
             self.db_pool.putconn(conn)
 
@@ -26,7 +31,8 @@ class StoreRepository:
             stores = cursor.fetchall()
             return stores
         except Exception as e:
-            raise Exception(f"StoreRepository.get_by_floor failed: {e}")
+            logger.error(f"StoreRepository.get_by_floor failed: {e}")
+            raise
         finally:
             self.db_pool.putconn(conn)
 
@@ -41,6 +47,7 @@ class StoreRepository:
             results = cursor.fetchall()
             return results
         except Exception as e:
-            raise Exception(f"StoreRepository.search failed: {e}")
+            logger.error(f"StoreRepository.search failed: {e}")
+            raise
         finally:
             self.db_pool.putconn(conn)
