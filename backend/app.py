@@ -2,7 +2,7 @@ from flask import Flask
 from routes.chat import create_chat_routes
 from routes.coupon import create_coupon_routes
 from routes.navigation import create_navigation_route
-from routes.session import session_bp
+from routes.session import create_session_route
 from routes.admin import admin_bp
 
 from infrastructure.kafka import create_kafka_producer
@@ -43,7 +43,7 @@ chat_service = ChatService(store_repo,product_repo,redis_client,llm_client,navig
 coupon_bp = create_coupon_routes(coupon_service)
 chat_bp = create_chat_routes(chat_service)
 navigation_bp = create_navigation_route(navigation_service)
-
+session_bp = create_session_route(redis_client)
 app = Flask(__name__)
 
 app.register_blueprint(chat_bp)
