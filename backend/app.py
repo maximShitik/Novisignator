@@ -3,6 +3,8 @@ from routes.chat import create_chat_routes
 from routes.coupon import create_coupon_routes
 from routes.navigation import create_navigation_route
 from routes.session import create_session_route
+from routes.screen import create_screen_routes 
+
 from routes.admin import admin_bp
 
 from infrastructure.kafka import MallKafkaProducer
@@ -20,17 +22,9 @@ from repositories.store_repository import StoreRepository
 from repositories.product_repository import ProductRepository
 from repositories.navigation_repository import NavigationRepository
 
+from backend.consts import DATABASE_URL,KAFKA_SERVERS,REDIS_HOST,REDIS_PORT,AWS_ACCESS_KEY,AWS_SECRET_KEY,AWS_REGION,S3_BUCKET,OPENAI_API_KEY,MODEL
 
-DATABASE_URL = "postgresql://user:password@localhost/malldb"
-KAFKA_SERVERS = "localhost:9092"
-REDIS_HOST = "localhost"
-REDIS_PORT = "6379"
-AWS_ACCESS_KEY =""
-AWS_SECRET_KEY = ""
-AWS_REGION = ""
-S3_BUCKET = ""
-OPENAI_API_KEY = ""
-MODEL = ""
+
  
 kafka_producer = MallKafkaProducer(KAFKA_SERVERS)
 db_pool = create_db_pool(DATABASE_URL)
@@ -52,6 +46,8 @@ coupon_bp = create_coupon_routes(coupon_service)
 chat_bp = create_chat_routes(chat_service)
 navigation_bp = create_navigation_route(navigation_service)
 session_bp = create_session_route(redis_client)
+screen_bp = create_screen_routes(redis_client)
+
 app = Flask(__name__)
 
 app.register_blueprint(chat_bp)
@@ -59,6 +55,9 @@ app.register_blueprint(coupon_bp)
 app.register_blueprint(navigation_bp)
 app.register_blueprint(session_bp)
 app.register_blueprint(admin_bp)
+app.register_blueprint(screen_bp)
 navigation_service.warm_cache()
+
+
 if __name__ == '__main__':
     app.run()
