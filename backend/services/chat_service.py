@@ -8,7 +8,7 @@ class ChatService():
         self.redis_client = redis_client
         self.llm_client = llm_client
 
-    def handle_message(self,input):
+    def handle_message(self,session_id,input):
         try:
             llm_response = self.llm_client.parse(input)
 
@@ -16,6 +16,7 @@ class ChatService():
             params = llm_response['params']
 
             cache_key = f"{intent}:{list(params.values())[0]}"
+            scan_point_id = self.redis_client.get(f"session:{session_id}:scan_point")
             cached = self.redis_client.get(cache_key)
             if cached:
                 return cached
@@ -24,7 +25,7 @@ class ChatService():
                         "find_store": lambda params: self.store_repo.get_by_name(params['store_name']),
                         "find_product": lambda params: self.product_repo.get_by_name(params['product_name']),
                         # "find_product_in_store": lambda params: self.product_repo.get_stores_by_product(params['product_id']),
-                        "navigate": lambda params: self.navigation_service.navigate(params['store_id']),}
+                        "navigate": lambda params: self.navigation_service.get_route(scan_point_id, params['store_id'])}
             
             result = handlers[intent](params)
 
@@ -34,6 +35,7 @@ class ChatService():
         except Exception as e:
             raise Exception(f"ChatService.handle_message failed: {e}")
         
+
 
 
 

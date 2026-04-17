@@ -6,8 +6,9 @@ def create_chat_routes(chat_service):
 
     @chat_bp.route('/chat', methods=['POST'])
     def chat():
+        session_id = request.cookies.get('session_id')
         data = request.get_json()
         input = data['message']
-        result = chat_service.handle_message(input)
+        result = chat_service.handle_message(session_id,input)
         return jsonify(result)
     return chat_bp
