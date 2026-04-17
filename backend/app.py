@@ -5,7 +5,7 @@ from routes.navigation import create_navigation_route
 from routes.session import create_session_route
 from routes.admin import admin_bp
 
-from infrastructure.kafka import create_kafka_producer
+from infrastructure.kafka import MallKafkaProducer
 from infrastructure.db import create_db_pool
 from infrastructure.redis import create_redis_client
 
@@ -25,7 +25,7 @@ KAFKA_SERVERS = "localhost:9092"
 REDIS_HOST = "localhost"
 REDIS_PORT = "6379"
 
-kafka_producer = create_kafka_producer(KAFKA_SERVERS)
+kafka_producer = MallKafkaProducer(KAFKA_SERVERS)
 db_pool = create_db_pool(DATABASE_URL)
 redis_client = create_redis_client(REDIS_HOST,REDIS_PORT)
 llm_client = None
