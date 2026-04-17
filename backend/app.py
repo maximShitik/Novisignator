@@ -8,6 +8,7 @@ from routes.admin import admin_bp
 from infrastructure.kafka import MallKafkaProducer
 from infrastructure.db import create_db_pool
 from infrastructure.redis import create_redis_client
+from infrastructure.s3 import MallS3
 
 
 from services.chat_service import ChatService
@@ -24,11 +25,16 @@ DATABASE_URL = "postgresql://user:password@localhost/malldb"
 KAFKA_SERVERS = "localhost:9092"
 REDIS_HOST = "localhost"
 REDIS_PORT = "6379"
+AWS_ACCESS_KEY =""
+AWS_SECRET_KEY = ""
+AWS_REGION = ""
+S3_BUCKET = ""
 
 kafka_producer = MallKafkaProducer(KAFKA_SERVERS)
 db_pool = create_db_pool(DATABASE_URL)
 redis_client = create_redis_client(REDIS_HOST,REDIS_PORT)
 llm_client = None
+s3_client = MallS3(AWS_ACCESS_KEY, AWS_SECRET_KEY, AWS_REGION, S3_BUCKET)
 
 coupon_repo = CouponRepository(db_pool)
 store_repo = StoreRepository(db_pool)
