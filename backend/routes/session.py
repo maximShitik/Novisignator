@@ -19,6 +19,6 @@ def create_session_route(redis_client):
         data = request.get_json()
         scan_point_id = data['scan_point_id']
         redis_client.set(f"session:{session_id}:scan_point", scan_point_id)
-        return scan_point_id
+        return jsonify({"scan_point_id": scan_point_id})
 
     return session_bp
