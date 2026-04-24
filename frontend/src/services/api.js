@@ -24,44 +24,35 @@ const displayCoupons = async (storeId) => {
 }
 
 const registerScan = async (scanPointId) => {
-    const response = await fetch(`${BASE_URL}/session/scan`, {
+    return request("/session/scan", {
         method: "POST",
         headers:  { "Content-Type": "application/json" },
         body: JSON.stringify({ scan_point_id: scanPointId })
+        
     })
-    const data = await response.json()
-    return data
 }
 
 const createSession = async () => {
-    const response = await fetch(`${BASE_URL}/session/create`, {
-        credentials: "include"
-    })
-    const data = await response.json()
-    return data
+
+    return request("/session/create")
 }
 
 const claimCoupon = async (couponCode) => {
-    const response = await fetch(`${BASE_URL}/coupon/claim`,{
+
+    return request("/coupon/claim",{
         method: "POST",
         headers:  { "Content-Type": "application/json" }, 
         body: JSON.stringify({coupon_code: couponCode})
     })
-
-    const data = await response.json()
-    return data
 }
 
 const getRoute  = async (scanPointId,storeId) => {
-    const response = await fetch(`${BASE_URL}/navigate/${scanPointId}/${storeId}`)
-    const data = await response.json()
-    return data
+    return request(`/navigate/${scanPointId}/${storeId}`)
 }
 
 const getCurrentAd = async () => {
-    const response = await fetch(`${BASE_URL}/screen/current-ad`)
-    const data = await response.json()
-    return data
+
+    return request("/screen/current-ad")
 }
 
 
