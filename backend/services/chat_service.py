@@ -1,4 +1,6 @@
 from infrastructure.logger import get_logger
+import json
+
 logger = get_logger(__name__)
 
 
@@ -13,6 +15,7 @@ class ChatService():
     def handle_message(self,session_id,input):
         try:
             llm_response = self.llm_client.parse(input)
+            print("LLM RESPONSE:", llm_response)
 
             intent = llm_response['intent']
             params = llm_response['params']
@@ -21,19 +24,23 @@ class ChatService():
             scan_point_id = self.redis_client.get(f"session:{session_id}:scan_point")
             cached = self.redis_client.get(cache_key)
             if cached:
-                return cached
+                return json.loads(cached)
             
             handlers = {
-                        "find_store": lambda params: self.store_repo.get_by_name(params['store_name']),
-                        "find_product": lambda params: self.product_repo.get_by_name(params['product_name']),
+                        "find_store": lambda params: self.store_repo.search(params['store_name']),
+                        "find_product": lambda params: self.product_repo.search(params['product_name']),
                         # "find_product_in_store": lambda params: self.product_repo.get_stores_by_product(params['product_id']),
                         "navigate": lambda params: self.navigation_service.get_route(scan_point_id, params['store_id'])}
             
             result = handlers[intent](params)
+            print("Result", result)
 
-            self.redis_client.set(cache_key,result,ex=2592000)
+            if not result:
+                  return {"response": "Sorry, we couldn't find what you're looking for."}
 
-            return result
+            self.redis_client.set(cache_key, json.dumps(result), ex=2592000)
+
+            return {"response": str(result), "store_id": result[0][0] if intent == "find_store" else None}
         except Exception as e:
             logger.error(f"ChatService.handle_message failed: {e}")
             raise

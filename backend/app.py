@@ -22,8 +22,13 @@ from repositories.store_repository import StoreRepository
 from repositories.product_repository import ProductRepository
 from repositories.navigation_repository import NavigationRepository
 
-from backend.consts import DATABASE_URL,KAFKA_SERVERS,REDIS_HOST,REDIS_PORT,AWS_ACCESS_KEY,AWS_SECRET_KEY,AWS_REGION,S3_BUCKET,OPENAI_API_KEY,MODEL
+from consts import DATABASE_URL,KAFKA_SERVERS,REDIS_HOST,REDIS_PORT,AWS_ACCESS_KEY,AWS_SECRET_KEY,AWS_REGION,S3_BUCKET,OPENAI_API_KEY,MODEL
 from infrastructure.logger import get_logger
+
+from flask_cors import CORS
+
+
+
 logger = get_logger(__name__)
 
  
@@ -50,6 +55,7 @@ session_bp = create_session_route(redis_client)
 screen_bp = create_screen_routes(redis_client)
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 
 app.register_blueprint(chat_bp)
 app.register_blueprint(coupon_bp)
