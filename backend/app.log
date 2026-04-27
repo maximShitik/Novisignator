@@ -94,3 +94,43 @@ LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null'
 LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
                                                                 ^
 
+2026-04-27 21:54:49,600 - repositories.navigation_repository - ERROR - NavigationRepository.get_all_routes failed: relation "store_navigation" does not exist
+LINE 1: SELECT * FROM store_navigation
+                      ^
+
+2026-04-27 21:54:49,602 - services.navigation_service - ERROR - NavigationService.warm_cache failed: relation "store_navigation" does not exist
+LINE 1: SELECT * FROM store_navigation
+                      ^
+
+2026-04-27 21:58:12,108 - repositories.navigation_repository - ERROR - NavigationRepository.get_all_routes failed: relation "store_navigation" does not exist
+LINE 1: SELECT * FROM store_navigation 
+                      ^
+
+2026-04-27 21:58:12,109 - services.navigation_service - ERROR - NavigationService.warm_cache failed: relation "store_navigation" does not exist
+LINE 1: SELECT * FROM store_navigation 
+                      ^
+
+2026-04-27 22:02:45,780 - repositories.navigation_repository - ERROR - NavigationRepository.get_navigation_route failed: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+
+2026-04-27 22:02:45,782 - services.navigation_service - ERROR - NavigationService.get_route failed: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+
+2026-04-27 22:02:45,783 - __main__ - ERROR - Unhandled exception: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+
+2026-04-27 22:02:46,092 - repositories.navigation_repository - ERROR - NavigationRepository.get_navigation_route failed: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+
+2026-04-27 22:02:46,092 - services.navigation_service - ERROR - NavigationService.get_route failed: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+
+2026-04-27 22:02:46,093 - __main__ - ERROR - Unhandled exception: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+

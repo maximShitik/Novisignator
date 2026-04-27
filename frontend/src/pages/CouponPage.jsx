@@ -6,22 +6,30 @@ import { useNavigate } from "react-router-dom"
 
 const CouponPage = () => {
   const { selectedStore } = useApp();
+  console.log("COUPON PAGE - selectedStore:", selectedStore)
   const [coupons, setCoupons] = useState([]);
   const navigate = useNavigate()
 
 
   useEffect(() => {
+    if (!selectedStore) return  
     const fetchCoupons = async () => {
       const data = await displayCoupons(selectedStore.id);
-      setCoupons(data);
+      console.log("COUPONS DATA:", data.coupons)
+
+      setCoupons(data.coupons);
     };
     fetchCoupons();
   }, []);
+
 
   const handleClaim = async (couponCode) => {
     await claimCoupon(couponCode);
   };
 
+  if (!selectedStore) {
+    return <p>No store selected. Go back to chat.</p>
+  }
 
 
   return (

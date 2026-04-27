@@ -12,14 +12,17 @@ class CouponService():
         self.kafka_client = kafka_client
 
     def display_coupons(self,store_id):
-        coupons_description = []
+        coupons_list = []
         try:
             coupons = self.coupon_repo.get_by_store(store_id)
 
             if coupons:
                 for coupon in coupons:
-                    coupons_description.append(coupon[2])
-                return { "success": True, "coupons": coupons_description }
+                    coupons_list.append({
+                    "coupon_code": coupon[1],
+                    "description": coupon[2]
+                })
+                return { "success": True, "coupons": coupons_list }
             else:
                 return NO_COUPONS
         except Exception as e:

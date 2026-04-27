@@ -10,24 +10,29 @@ import { useNavigate } from "react-router-dom"
 
 
 const NavigatePage = () => {
-  const {selectedStore, scanPointId } = useApp()
-  const [routePath  , setRoutePath] = useState(null)
+  const { selectedStore, scanPointId } = useApp()
+  const [routePath, setRoutePath] = useState(null)
   const navigate = useNavigate()
 
-  useEffect(()=>{
-    const fetchRoute = async () =>{
-    const data = await getRoute(scanPointId,selectedStore.id)
-    setRoutePath(data.route)
+  useEffect(() => {
+    if (!selectedStore || !scanPointId) return
+    const fetchRoute = async () => {
+      const data = await getRoute(scanPointId, selectedStore.id)
+      setRoutePath(data.route)
     }
-    fetchRoute();
-  },[])
+    fetchRoute()
+  }, [])
+
+  if (!selectedStore || !scanPointId) {
+    return <p>No store or scan point selected. Go back to chat.</p>
+  }
 
   return (
     <div>
       <h3>Navigation to {selectedStore.name}</h3>
       <MapView routePath={routePath} />
       {selectedStore.id && <button onClick={() => navigate("/coupon")}>Coupons</button>}
-      <button onClick={() =>navigate("/")}>Back to chat</button>
+      <button onClick={() => navigate("/")}>Back to chat</button>
     </div>
   )
 }

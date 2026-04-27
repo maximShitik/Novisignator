@@ -1,9 +1,10 @@
 const CouponCard = ({ couponCode, description, onClaim }) => {
-  <div>
+  return(  <div>
     <h3>{couponCode}</h3>
     <p>{description}</p>
     <button onClick={() => onClaim(couponCode)}>Claim</button>
-  </div>;
+  </div>)
+
 };
 
 export default CouponCard;

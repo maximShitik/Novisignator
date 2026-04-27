@@ -36,25 +36,27 @@ class ChatService():
             print("Result", result)
 
             if not result:
-                  return {"response": "Sorry, we couldn't find what you're looking for."}
-
-            self.redis_client.set(cache_key, json.dumps(result), ex=2592000)
+                return {"response": "Sorry, we couldn't find what you're looking for."}
 
             if intent == "find_store":
-                store = result[0]  # first match
-                return {
+                store = result[0]
+                formatted = {
                     "response": f"{store[1]} נמצא/ת בקומה {store[3]}, קטגוריה: {store[2]}",
                     "store_id": store[0],
                     "store_name": store[1]
                 }
             elif intent == "find_product":
                 product = result[0]
-                return {
+                formatted = {
                     "response": f"{product[1]} זמין/ה בקניון",
                     "product_id": product[0]
                 }
             else:
-                return {"response": str(result)}
+                formatted = {"response": str(result)}
+
+            self.redis_client.set(cache_key, json.dumps(formatted), ex=2592000)
+            return formatted
+
         except Exception as e:
             logger.error(f"ChatService.handle_message failed: {e}")
             raise

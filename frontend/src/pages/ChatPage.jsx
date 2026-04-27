@@ -21,6 +21,7 @@ const ChatPage = () => {
     ]);
 
     if (response.store_id) {
+       console.log("SETTING STORE:", response.store_id, response.store_name)
       setSelectedStore({ id: response.store_id, name: response.store_name });
       setMessages(prev => [...prev, {text:"Want a coupon?", sender:"bot", type:"prompt"}])
     }
