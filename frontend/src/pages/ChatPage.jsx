@@ -4,10 +4,12 @@ import { useApp } from "../context/AppContext";
 import MessageBubble from "../components/MessageBubble";
 import Composer from "../components/Composer";
 import ConfirmPrompt from "../components/ConfirmPrompt";
+import { useNavigate } from "react-router-dom"
 
 const ChatPage = () => {
   const [messages, setMessages] = useState([]);
   const { setSelectedStore } = useApp();
+  const navigate = useNavigate()
 
   const handleSend = async (userMessage) => {
     setMessages([...messages, { text: userMessage, sender: "user" }]);

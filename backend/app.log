@@ -68,3 +68,29 @@ LINE 1: SELECT * FROM store_navigation
 2026-04-25 19:57:38,131 - __main__ - ERROR - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
 2026-04-25 19:58:48,420 - services.chat_service - ERROR - ChatService.handle_message failed: 'store_id'
 2026-04-25 19:58:48,420 - __main__ - ERROR - Unhandled exception: 'store_id'
+2026-04-26 20:09:43,609 - __main__ - ERROR - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-04-26 20:09:43,715 - __main__ - ERROR - Unhandled exception: 404 Not Found: The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.
+2026-04-26 20:23:35,088 - repositories.navigation_repository - ERROR - NavigationRepository.get_navigation_route failed: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+
+2026-04-26 20:23:35,089 - services.navigation_service - ERROR - NavigationService.get_route failed: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+
+2026-04-26 20:23:35,090 - __main__ - ERROR - Unhandled exception: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+
+2026-04-26 20:23:35,413 - repositories.navigation_repository - ERROR - NavigationRepository.get_navigation_route failed: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+
+2026-04-26 20:23:35,414 - services.navigation_service - ERROR - NavigationService.get_route failed: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+
+2026-04-26 20:23:35,414 - __main__ - ERROR - Unhandled exception: invalid input syntax for type integer: "null"
+LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
+                                                                ^
+

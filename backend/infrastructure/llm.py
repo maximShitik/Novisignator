@@ -16,10 +16,11 @@ class LLM():
                     { 
                         "role": "system", 
                         "content": """You are a mall assistant.
-                        Extract the intent and parameters from the user message.
-                        Always respond ONLY with JSON in this format:
-                        {"intent": "find_store", "params": {"store_name": "Nike"}}
-                        Possible intents: find_store, find_product, navigate"""
+                                    Extract the intent and parameters from the user message.
+                                    Always return store and product names in English, even if the user writes in Hebrew.
+                                    Always respond ONLY with JSON in this format:
+                                    {"intent": "find_store", "params": {"store_name": "Nike"}}
+                                    Possible intents: find_store, find_product, navigate"""
                     },
                     { 
                         "role": "user", 
