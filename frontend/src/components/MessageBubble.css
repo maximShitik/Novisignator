@@ -1,0 +1,19 @@
+
+.message {
+    max-width: 80%;
+    width: fit-content;
+    border-radius: var(--radius);
+    padding: 10px;
+}
+
+.message--user{
+    background-color: var(--primary);
+    color: white;
+    margin-left: auto;
+}
+
+.message--bot{
+    background-color: var(--primary-light);
+    color: var(--text);
+    margin-right: auto;
+}

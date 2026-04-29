@@ -28,7 +28,7 @@ const ChatPage = () => {
   };
 
   return (
-    <div>
+    <div className="chat-page">
       <h1>Chat</h1>
       <div>
         {messages.map((msg, index) => {

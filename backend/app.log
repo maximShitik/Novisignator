@@ -134,3 +134,11 @@ LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null'
 LINE 1: ...tore_navigation WHERE store_id='5' and scan_point_id='null' 
                                                                 ^
 
+2026-04-28 21:12:56,441 - repositories.navigation_repository - ERROR - NavigationRepository.get_all_routes failed: relation "store_navigation" does not exist
+LINE 1: SELECT * FROM store_navigation 
+                      ^
+
+2026-04-28 21:12:56,443 - services.navigation_service - ERROR - NavigationService.warm_cache failed: relation "store_navigation" does not exist
+LINE 1: SELECT * FROM store_navigation 
+                      ^
+
