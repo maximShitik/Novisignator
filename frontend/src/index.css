@@ -1,7 +1,8 @@
+@import "tailwindcss";
 :root {
   --primary: #2563eb;
   --primary-light: #dbeafe;
-  --bg: #f8fafc;
+  --bg: #111c27;
   --surface: #ffffff;
   --text: #1e293b;
   --text-light: #64748b;
@@ -10,17 +11,19 @@
   --radius: 12px;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
 }
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
-  font-family: 'Assistant', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
+    font-family: 'Assistant', sans-serif;  /* every text uses this font */
+    background: var(--bg);                 /* page background color */
+    color: var(--text);                    /* default text color */
+    min-height: 100vh;                     /* body covers full screen */
 }
+
+#root {
+    height: 100vh;           /* React container = full viewport */
+    display: flex;           /* arrange children with flexbox */
+    justify-content: center; /* center the chat box horizontally */
+    padding: 16px 0;         /* spacing top and bottom */
+}
+

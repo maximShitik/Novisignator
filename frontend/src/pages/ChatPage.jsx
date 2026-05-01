@@ -28,9 +28,11 @@ const ChatPage = () => {
   };
 
   return (
-    <div className="chat-page">
-      <h1>Chat</h1>
-      <div>
+<div className="max-w-lg w-full h-full flex flex-col bg-white shadow-lg rounded-xl overflow-hidden " dir="rtl">  
+  <div className="p-4 border-b text-center">  
+      <h1 className="text-lg font-semibold">MallAssistant</h1>
+      </div>
+      <div className="flex-1 overflow-y-auto py-4 px-4 flex flex-col gap-2">
         {messages.map((msg, index) => {
           if (msg.type === "prompt") {
             return (

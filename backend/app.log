@@ -142,3 +142,5 @@ LINE 1: SELECT * FROM store_navigation
 LINE 1: SELECT * FROM store_navigation 
                       ^
 
+2026-04-30 17:42:16,356 - services.chat_service - ERROR - ChatService.handle_message failed: 'store_id'
+2026-04-30 17:42:16,358 - __main__ - ERROR - Unhandled exception: 'store_id'
