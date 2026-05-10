@@ -1,5 +1,5 @@
 import boto3
-
+from botocore.config import Config
 
 class MallS3:
     def __init__(self,aws_access_key, aws_secret_key, region,bucket):
@@ -8,7 +8,9 @@ class MallS3:
         's3',
         aws_access_key_id=aws_access_key,
         aws_secret_access_key=aws_secret_key,
-        region_name=region)
+        region_name=region,
+        config=Config(signature_version='s3v4'),
+        endpoint_url=f'https://s3.{region}.amazonaws.com')
 
 
     def generate_presigned_url(self, key):
@@ -21,3 +23,11 @@ class MallS3:
         ExpiresIn=3600
     )
         return url
+    
+    def upload_file(self,file_data,key,content_type):
+        self.s3_client.put_object(
+            Bucket=self.bucket,
+            Key=key,
+            Body=file_data,
+            ContentType=content_type
+        )
