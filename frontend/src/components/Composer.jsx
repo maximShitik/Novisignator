@@ -11,16 +11,16 @@ const Composer = ({onSend}) => {
     }
 
 return (
-    <div className="p-3 border-t flex gap-2 shrink-0 border-2 ">
+    <div className="p-3 border-t flex gap-2 shrink-0 ">
         <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Write a massage"
-            className="flex-1 px-4 py-2 border rounded-xl outline-none focus:border-blue-500"
+            placeholder="Write a message"
+            className="flex-1 px-4 py-2 bg-gray-100 rounded-full outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <button onClick={handleClick} className=" px-5 py-2 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 whitespace-nowrap">
-            send
+        <button onClick={handleClick} className=" w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-700 active:bg-blue-800">
+            ⫸
         </button>
     </div>
 )

@@ -36,19 +36,19 @@ class ChatService():
             print("Result", result)
 
             if not result:
-                return {"response": "Sorry, we couldn't find what you're looking for."}
+                return {"response": "Sorry the serice is not avaliable"}
 
             if intent == "find_store":
                 store = result[0]
                 formatted = {
-                    "response": f"{store[1]} נמצא/ת בקומה {store[3]}, קטגוריה: {store[2]}",
+                    "response": f"{store[1]} at floor: {store[3]}, Category: {store[2]}",
                     "store_id": store[0],
                     "store_name": store[1]
                 }
             elif intent == "find_product":
                 product = result[0]
                 formatted = {
-                    "response": f"{product[1]} זמין/ה בקניון",
+                    "response": f"{product[1]} Avaliable at the mall",
                     "product_id": product[0]
                 }
             else:
